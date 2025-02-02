@@ -20,7 +20,7 @@ namespace Quiz_platform_User.DAL.Repositories.QuizRepostository
 
         public IEnumerable<Quize> GetAllUsingProc()
         {
-            var quizzes = _context.Quizes.FromSqlRaw("EXEC GetAllQuizes").ToList();
+            var quizzes = _context.Set<Quize>().FromSqlRaw("EXEC GetAllQuizes").ToList();
             return quizzes;
         }
 
