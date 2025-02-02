@@ -1,0 +1,81 @@
+﻿@model IEnumerable<QuizReadVM>
+
+@{
+    int count = 0;
+}
+
+
+
+<form class="d-flex align-items-center gap-2" onsubmit="GetData()">
+     <input type="text" class="form-control w-25" id="inputText" placeholder="Quiz Name" name="name">
+     <button type="submit" class="btn btn-primary">Search</button>
+</form>
+  
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Quiz Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="Quizzes">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(count++)</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Date</td>
+                <td>
+                    <a class="btn btn-warning" href="/Quizzes/Details/@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+       
+    </tbody>
+</table>
+
+@section Scripts
+ {
+    <script>
+        function GetData() {
+            event.preventDefault();
+
+            var quizName = document.getElementById("inputText").value;
+            var count = 0;
+
+            $.ajax({
+                type: 'POST',
+                url: "/Quizzes/Index?name=" + quizName,  
+                success: function (result) {
+                    console.log(result);
+
+                    var quizzesTable = document.getElementById("Quizzes");
+                    quizzesTable.innerHTML = "";  
+
+                   
+                        for (let quiz of result) {
+                            count++
+                            quizzesTable.innerHTML += `
+                                        <tr>
+                                            <td>${count}</td>
+                                            <td>${quiz.name}</td>
+                                            <td>${quiz.description}</td>
+                                            <td>${quiz.date}</td>
+                                            <td>
+                                                <a class="btn btn-warning" href="/Quizzes/Details/${quiz.id}">Details</a>
+                                            </td>
+                                        </tr>`;
+                        }
+                    
+                },
+               
+            });
+
+        }
+    </script>
+}
